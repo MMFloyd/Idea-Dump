@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <title>Idea Dump</title>
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #d1d5db;
+      --accent: #111827;
+      --accent-2: #2563eb;
+      --danger: #b91c1c;
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 16px;
+    }
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
+      padding-bottom: 96px;
+    }
+    .header {
+      padding: 8px 4px 16px;
+    }
+    h1 {
+      font-size: 1.9rem;
+      margin: 0 0 4px;
+      line-height: 1.1;
+    }
+    .sub {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.96rem;
+    }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    textarea, input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .actions, .small-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    button {
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+    button.secondary {
+      background: #e5e7eb;
+      color: var(--text);
+    }
+    button.link {
+      background: transparent;
+      color: var(--accent-2);
+      padding: 0;
+    }
+    button.danger {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .stat {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+    .stat .n { font-size: 1.4rem; font-weight: 700; }
+    .stat .l { color: var(--muted); font-size: 0.88rem; margin-top: 2px; }
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .idea {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .idea-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .idea-text {
+      white-space: pre-wrap;
+      line-height: 1.4;
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-bottom: 10px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .tag.action { background: #dcfce7; color: #166534; }
+    .tag.maybe { background: #fef3c7; color: #92400e; }
+    .tag.archive { background: #e5e7eb; color: #374151; }
+    .tag.high { background: #fee2e2; color: #991b1b; }
+    .tag.medium { background: #e0e7ff; color: #3730a3; }
+    .tag.low { background: #ecfccb; color: #3f6212; }
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 20px 10px;
+    }
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 12px;
+    }
+    @media (max-width: 680px) {
+      .row, .row-3, .toolbar, .stats { grid-template-columns: 1fr; }
+      body { padding: 12px; }
+      h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>Idea Dump</h1>
+      <p class="sub">Capture fast. Decide later. Stop storing loose thoughts in your head.</p>
+    </div>
+
+    <div class="card">
+      <label for="ideaInput"><strong>Dump an idea</strong></label>
+      <textarea id="ideaInput" placeholder="Write the idea. Do not overthink it."></textarea>
+      <div class="row-3">
+        <select id="typeInput">
+          <option value="idea">Idea</option>
+          <option value="task">Task</option>
+          <option value="note">Note</option>
+        </select>
+        <select id="statusInput">
+          <option value="inbox">Inbox</option>
+          <option value="action">Action</option>
+          <option value="maybe">Maybe</option>
+          <option value="archive">Archive</option>
+        </select>
+        <select id="priorityInput">
+          <option value="medium">Medium priority</option>
+          <option value="high">High priority</option>
+          <option value="low">Low priority</option>
+        </select>
+      </div>
+      <div class="row">
+        <input id="categoryInput" placeholder="Category, e.g. home, work, fitness" />
+        <input id="nextStepInput" placeholder="Next step, if there is one" />
+      </div>
+      <div class="actions">
+        <button id="saveBtn">Save idea</button>
+        <button class="secondary" id="clearDraftBtn">Clear</button>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="card">
+      <strong>Filter</strong>
+      <div class="toolbar">
+        <input id="searchInput" placeholder="Search ideas" />
+        <select id="filterStatus">
+          <option value="all">All statuses</option>
+          <option value="inbox">Inbox</option>
+          <option value="action">Action</option>
+          <option value="maybe">Maybe</option>
+          <option value="archive">Archive</option>
+        </select>
+        <select id="sortBy">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="priority">Priority first</option>
+        </select>
+      </div>
+      <div class="small-actions">
+        <button class="secondary" id="exportBtn">Export backup</button>
+        <button class="secondary" id="importBtn">Import backup</button>
+        <input type="file" id="importFile" accept="application/json" hidden />
+        <button class="danger" id="wipeBtn">Delete all</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Your ideas</strong>
+      <div id="ideasList"></div>
+      <div class="footer-note">Stored on this device.</div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'ideaDumpApp.v1';
+    const els = {
+      ideaInput: document.getElementById('ideaInput'),
+      typeInput: document.getElementById('typeInput'),
+      statusInput: document.getElementById('statusInput'),
+      priorityInput: document.getElementById('priorityInput'),
+      categoryInput: document.getElementById('categoryInput'),
+      nextStepInput: document.getElementById('nextStepInput'),
+      saveBtn: document.getElementById('saveBtn'),
+      clearDraftBtn: document.getElementById('clearDraftBtn'),
+      stats: document.getElementById('stats'),
+      searchInput: document.getElementById('searchInput'),
+      filterStatus: document.getElementById('filterStatus'),
+      sortBy: document.getElementById('sortBy'),
+      ideasList: document.getElementById('ideasList'),
+      exportBtn: document.getElementById('exportBtn'),
+      importBtn: document.getElementById('importBtn'),
+      importFile: document.getElementById('importFile'),
+      wipeBtn: document.getElementById('wipeBtn')
+    };
+
+    let ideas = loadIdeas();
+
+    function loadIdeas() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveIdeas() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(ideas));
+    }
+
+    function formatDate(iso) {
+      return new Date(iso).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function priorityRank(value) {
+      return { high: 0, medium: 1, low: 2 }[value] ?? 1;
+    }
+
+    function statusTag(status) {
+      const labels = { inbox: 'Inbox', action: 'Action', maybe: 'Maybe', archive: 'Archive' };
+      return `<span class="tag ${status}">${labels[status] || status}</span>`;
+    }
+
+    function priorityTag(priority) {
+      const labels = { high: 'High', medium: 'Medium', low: 'Low' };
+      return `<span class="tag ${priority}">${labels[priority] || priority}</span>`;
+    }
+
+    function renderStats() {
+      const counts = {
+        total: ideas.length,
+        inbox: ideas.filter(i => i.status === 'inbox').length,
+        action: ideas.filter(i => i.status === 'action').length,
+        maybe: ideas.filter(i => i.status === 'maybe').length,
+      };
+
+      els.stats.innerHTML = `
+        <div class="stat"><div class="n">${counts.total}</div><div class="l">Total</div></div>
+        <div class="stat"><div class="n">${counts.inbox}</div><div class="l">Inbox</div></div>
+        <div class="stat"><div class="n">${counts.action}</div><div class="l">Action</div></div>
+        <div class="stat"><div class="n">${counts.maybe}</div><div class="l">Maybe</div></div>
+      `;
+    }
+
+    function filteredIdeas() {
+      const q = els.searchInput.value.trim().toLowerCase();
+      const status = els.filterStatus.value;
+      const sort = els.sortBy.value;
+
+      let result = ideas.filter(i => {
+        const matchesText = !q || [i.text, i.category, i.nextStep, i.type, i.status, i.priority]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+          .includes(q);
+        const matchesStatus = status === 'all' || i.status === status;
+        return matchesText && matchesStatus;
+      });
+
+      result.sort((a, b) => {
+        if (sort === 'oldest') return new Date(a.createdAt) - new Date(b.createdAt);
+        if (sort === 'priority') return priorityRank(a.priority) - priorityRank(b.priority) || new Date(b.createdAt) - new Date(a.createdAt);
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      });
+
+      return result;
+    }
+
+    function renderIdeas() {
+      const result = filteredIdeas();
+      if (!result.length) {
+        els.ideasList.innerHTML = '<div class="empty">Nothing here. Capture something or change the filter.</div>';
+        return;
+      }
+
+      els.ideasList.innerHTML = result.map(i => `
+        <div class="idea">
+          <div class="idea-top">
+            <div style="flex:1; min-width:0;">
+              <p class="idea-text">${escapeHtml(i.text)}</p>
+              <div class="meta">
+                <span>${capitalize(i.type)}</span>
+                <span>${formatDate(i.createdAt)}</span>
+                ${i.category ? `<span>Category: ${escapeHtml(i.category)}</span>` : ''}
+              </div>
+              <div class="small-actions">
+                ${statusTag(i.status)}
+                ${priorityTag(i.priority)}
+                ${i.nextStep ? `<span class="tag action">Next: ${escapeHtml(i.nextStep)}</span>` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="small-actions">
+            <button class="secondary" onclick="moveIdea('${i.id}','inbox')">Inbox</button>
+            <button class="secondary" onclick="moveIdea('${i.id}','action')">Action</button>
+            <button class="secondary" onclick="moveIdea('${i.id}','maybe')">Maybe</button>
+            <button class="secondary" onclick="moveIdea('${i.id}','archive')">Archive</button>
+            <button class="danger" onclick="deleteIdea('${i.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function capitalize(str) {
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+    }
+
+    function clearDraft() {
+      els.ideaInput.value = '';
+      els.typeInput.value = 'idea';
+      els.statusInput.value = 'inbox';
+      els.priorityInput.value = 'medium';
+      els.categoryInput.value = '';
+      els.nextStepInput.value = '';
+      els.ideaInput.focus();
+    }
+
+    function addIdea() {
+      const text = els.ideaInput.value.trim();
+      if (!text) {
+        alert('Write the idea first.');
+        return;
+      }
+      ideas.unshift({
+        id: crypto.randomUUID(),
+        text,
+        type: els.typeInput.value,
+        status: els.statusInput.value,
+        priority: els.priorityInput.value,
+        category: els.categoryInput.value.trim(),
+        nextStep: els.nextStepInput.value.trim(),
+        createdAt: new Date().toISOString()
+      });
+      saveIdeas();
+      clearDraft();
+      render();
+    }
+
+    window.moveIdea = function(id, status) {
+      const item = ideas.find(i => i.id === id);
+      if (!item) return;
+      item.status = status;
+      saveIdeas();
+      render();
+    }
+
+    window.deleteIdea = function(id) {
+      ideas = ideas.filter(i => i.id !== id);
+      saveIdeas();
+      render();
+    }
+
+    function exportBackup() {
+      const blob = new Blob([JSON.stringify(ideas, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'idea-dump-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importBackup(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (!Array.isArray(imported)) throw new Error();
+          ideas = imported;
+          saveIdeas();
+          render();
+          alert('Backup imported.');
+        } catch {
+          alert('That file is not a valid backup.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function wipeAll() {
+      if (!confirm('Delete all ideas on this device?')) return;
+      ideas = [];
+      saveIdeas();
+      render();
+    }
+
+    function render() {
+      renderStats();
+      renderIdeas();
+    }
+
+    els.saveBtn.addEventListener('click', addIdea);
+    els.clearDraftBtn.addEventListener('click', clearDraft);
+    els.searchInput.addEventListener('input', renderIdeas);
+    els.filterStatus.addEventListener('change', renderIdeas);
+    els.sortBy.addEventListener('change', renderIdeas);
+    els.exportBtn.addEventListener('click', exportBackup);
+    els.importBtn.addEventListener('click', () => els.importFile.click());
+    els.importFile.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) importBackup(file);
+      e.target.value = '';
+    });
+    els.wipeBtn.addEventListener('click', wipeAll);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+
+    render();
+  </script>
+</body>
+</html>
